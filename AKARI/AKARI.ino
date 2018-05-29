@@ -80,40 +80,5 @@ void setup() {
 }
 
 void loop() {
-  /*
-  // Setting the LEDs On or Off at x,y or row,column position
-  m.setDot(6, 2, true);
-  delay(1000);
-  m.setDot(6, 3, true);
-  delay(1000);
-  m.clear();  // Clears the display
-  for(int i = 0; i < 8; i++) {
-    m.setDot(i, i, true);
-    delay(300);
-  }
-  m.clear();
-  // Displaying the character at x,y (upper left corner of the character)
-  m.writeSprite(2, 0, A);
-  delay(1000);
-
-  m.writeSprite(2, 0, B);
-  delay(1000);
-
-  m.writeSprite(0, 0, smile01);
-  delay(1000);
-
-  m.writeSprite(0, 0, smile02);
-  delay(1000);
-
-  m.writeSprite(0, 0, smile03);
-  delay(1000);
-
-  for(int i = 0; i < 8; i++) {
-    m.shiftLeft(false, false);
-    delay(300);
-  }
-  m.clear();
-  */
-
   m.clear();
 }
