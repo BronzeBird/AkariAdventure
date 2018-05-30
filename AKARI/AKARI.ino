@@ -81,4 +81,7 @@ void setup() {
 
 void loop() {
   m.clear();
+  
+  // Show initial position of Akari
+  m.setDot(akari_pos.x, akari_pos.y, true);
 }
