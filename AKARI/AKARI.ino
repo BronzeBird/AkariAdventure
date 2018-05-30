@@ -39,6 +39,10 @@ int servants_num = 0;
 // Trap
 Point trap_pos[2];
 
+// Key values
+int move_key = 0;
+int attack_key = 0;
+
 int i;
 
 void setup() {
@@ -77,11 +81,36 @@ void setup() {
     trap_pos[i].x = random(1, 8);
     trap_pos[i].y = random(1, 8);
   }
+
+  // For Test
+  Serial.begin(9600);
 }
 
 void loop() {
+  move_key = analogRead(A0);
+  attack_key = analogRead(A1);
+
+  // Test Code : show key status
+  Serial.println(move_key);
+  Serial.println(attack_key);
+
+  if(move_key == 1023) {
+    Serial.println("Go west!");
+  }
+  else if(move_key >= 990 && move_key <= 1010) {
+    Serial.println("Go north!");
+  }
+  else if(move_key >= 505 && move_key <= 515) {
+    Serial.println("Go south!");
+  }
+  else if(move_key >= 5 && move_key <= 10) {
+    Serial.println("Go east!");
+  }
+  else {
+    Serial.println("Stay!");
+  }
   m.clear();
-  
-  // Show initial position of Akari
+
+  // Show current position of Akari
   m.setDot(akari_pos.x, akari_pos.y, true);
 }
