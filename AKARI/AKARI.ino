@@ -5,6 +5,13 @@
 
 #include <MaxMatrix.h>
 
+// Dimension values
+#define WEST 1
+#define NORTH 2
+#define SOUTH 3
+#define EAST 4
+#define STAY 0
+
 int DIN = 7;  // DIN pin of MAX7219 module
 int CLK = 6;  // CLK pin of MAX7219 module
 int CS = 5;   // CS pin of MAX7219 module
@@ -13,7 +20,7 @@ int maxInUse = 1;
 MaxMatrix m(DIN, CS, CLK, maxInUse);
 
 struct Point {
-  int x, y;
+  long x, y;
 };
 
 // Akari
@@ -43,50 +50,82 @@ Point trap_pos[2];
 int move_key = 0;
 int attack_key = 0;
 
+// Past key values
+int past_move_key = 0;
+int past_attack_key = 0;
+
 int i;
 
+// Convert resistance value to dimension value
+int resist_to_dimension(int resist) {
+  if(resist == 1023) {
+    return WEST;
+  }
+  if(resist >= 990 && resist <= 1010) {
+    return NORTH;
+  }
+  if(resist >= 505 && resist <= 515) {
+    return SOUTH;
+  }
+  if(resist >= 5 && resist <= 10) {
+    return EAST;
+  }
+
+  return STAY;
+}
+
 void setup() {
+  // For Test
+  Serial.begin(9600);
+  randomSeed(analogRead(2));
+  
   m.init(); // MAX7219 initialization
   m.setIntensity(8);  // initial led maxrix intensity, 0-15
 
   // Initialize positions
-  akari_pos.x = 0;
-  akari_pos.y = 0;
+//  akari_pos.x = 0;
+//  akari_pos.y = 0;
+//
+//  vampire_pos.x = 0;
+//  vampire_pos.y = 0;
+//
+//  for(i = 0; i < 4; i++) {
+//    village_people_pos[i].x = 0;
+//    village_people_pos[i].y = 0;
+//  }
+//
+//  for(i = 0; i < 2; i++) {
+//    trap_pos[i].x = 0;
+//    trap_pos[i].y = 0;
+//  }
 
-  vampire_pos.x = 0;
-  vampire_pos.y = 0;
+  akari_pos.x = random(7);
+  akari_pos.y = random(7);
+
+  vampire_pos.x = random(7);
+  vampire_pos.y = random(7);
 
   for(i = 0; i < 4; i++) {
-    village_people_pos[i].x = 0;
-    village_people_pos[i].y = 0;
+    village_people_pos[i].x = random(7);
+    village_people_pos[i].y = random(7);
   }
 
   for(i = 0; i < 2; i++) {
-    trap_pos[i].x = 0;
-    trap_pos[i].y = 0;
+    trap_pos[i].x = random(7);
+    trap_pos[i].y = random(7);
   }
 
-  akari_pos.x = random(1, 8);
-  akari_pos.y = random(1, 8);
-
-  vampire_pos.x = random(1, 8);
-  vampire_pos.y = random(1, 8);
-
-  for(i = 0; i < 4; i++) {
-    village_people_pos[i].x = random(1, 8);
-    village_people_pos[i].y = random(1, 8);
-  }
-
-  for(i = 0; i < 2; i++) {
-    trap_pos[i].x = random(1, 8);
-    trap_pos[i].y = random(1, 8);
-  }
-
-  // For Test
-  Serial.begin(9600);
+  
 }
 
 void loop() {
+  m.clear();
+
+  // Show current position of Akari
+  m.setDot(akari_pos.x, akari_pos.y, true);
+  
+  past_move_key = move_key;
+  past_attack_key = attack_key;
   move_key = analogRead(A0);
   attack_key = analogRead(A1);
 
@@ -94,23 +133,33 @@ void loop() {
   Serial.println(move_key);
   Serial.println(attack_key);
 
-  if(move_key == 1023) {
-    Serial.println("Go west!");
+  // When a move button has been pressed, turn.
+  if(resist_to_dimension(past_move_key) == STAY) {
+    switch(resist_to_dimension(move_key)) {
+    case WEST:
+      Serial.println("Go west!");
+      if(akari_pos.x > 0)
+        akari_pos.x--;
+      break;
+    case NORTH:
+      Serial.println("Go north!");
+      if(akari_pos.y > 0)
+        akari_pos.y--;
+      break;
+    case SOUTH:
+      Serial.println("Go south!");
+      if(akari_pos.y < 7)
+        akari_pos.y++;
+      break;
+    case EAST:
+      Serial.println("Go eest!");
+      if(akari_pos.x < 7)
+        akari_pos.x++;
+      break;
+    default:
+      break;
+    }
   }
-  else if(move_key >= 990 && move_key <= 1010) {
-    Serial.println("Go north!");
-  }
-  else if(move_key >= 505 && move_key <= 515) {
-    Serial.println("Go south!");
-  }
-  else if(move_key >= 5 && move_key <= 10) {
-    Serial.println("Go east!");
-  }
-  else {
-    Serial.println("Stay!");
-  }
-  m.clear();
-
-  // Show current position of Akari
-  m.setDot(akari_pos.x, akari_pos.y, true);
+  
+  
 }
