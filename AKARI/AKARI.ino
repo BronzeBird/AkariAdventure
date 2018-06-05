@@ -11,6 +11,7 @@
 #define SOUTH 3
 #define EAST 4
 #define STAY 0
+#define OTHER -1
 
 int DIN = 7;  // DIN pin of MAX7219 module
 int CLK = 6;  // CLK pin of MAX7219 module
@@ -56,22 +57,25 @@ int past_attack_key = 0;
 
 int i;
 
-// Convert resistance value to dimension value
-int resist_to_dimension(int resist) {
-  if(resist == 1023) {
+// Convert current value to dimension value
+int current_to_dimension(int current) {
+  if(current >= 1011 && current <= 1029) {
     return WEST;
   }
-  if(resist >= 990 && resist <= 1010) {
+  if(current >= 990 && current <= 1010) {
     return NORTH;
   }
-  if(resist >= 505 && resist <= 515) {
+  if(current >= 505 && current <= 515) {
     return SOUTH;
   }
-  if(resist >= 5 && resist <= 10) {
+  if(current >= 13 && current <= 17) {
     return EAST;
   }
+  if(current < 13) {
+    return STAY;
+  }
 
-  return STAY;
+  return OTHER;
 }
 
 void setup() {
@@ -81,23 +85,6 @@ void setup() {
   
   m.init(); // MAX7219 initialization
   m.setIntensity(8);  // initial led maxrix intensity, 0-15
-
-  // Initialize positions
-//  akari_pos.x = 0;
-//  akari_pos.y = 0;
-//
-//  vampire_pos.x = 0;
-//  vampire_pos.y = 0;
-//
-//  for(i = 0; i < 4; i++) {
-//    village_people_pos[i].x = 0;
-//    village_people_pos[i].y = 0;
-//  }
-//
-//  for(i = 0; i < 2; i++) {
-//    trap_pos[i].x = 0;
-//    trap_pos[i].y = 0;
-//  }
 
   akari_pos.x = random(7);
   akari_pos.y = random(7);
@@ -134,8 +121,8 @@ void loop() {
   Serial.println(attack_key);
 
   // When a move button has been pressed, turn.
-  if(resist_to_dimension(past_move_key) == STAY) {
-    switch(resist_to_dimension(move_key)) {
+  if(current_to_dimension(past_move_key) == STAY) {
+    switch(current_to_dimension(move_key)) {
     case WEST:
       Serial.println("Go west!");
       if(akari_pos.x > 0)
@@ -152,7 +139,7 @@ void loop() {
         akari_pos.y++;
       break;
     case EAST:
-      Serial.println("Go eest!");
+      Serial.println("Go east!");
       if(akari_pos.x < 7)
         akari_pos.x++;
       break;
@@ -160,6 +147,4 @@ void loop() {
       break;
     }
   }
-  
-  
 }
