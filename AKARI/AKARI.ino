@@ -122,7 +122,7 @@ void loop() {
   Serial.print("attack_key : ");
   Serial.println(attack_key);
 
-  // When a move button has been pressed, turn.
+  // Move button processing
   if(current_to_dimension(past_move_key) == STAY) {
     switch(current_to_dimension(move_key)) {
     case WEST:
@@ -150,6 +150,7 @@ void loop() {
     }
   }
   
+  // Attack button processing
   if(current_to_dimension(past_attack_key) == STAY) {
     switch(current_to_dimension(attack_key)) {
     case WEST:
