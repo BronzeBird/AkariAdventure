@@ -117,7 +117,9 @@ void loop() {
   attack_key = analogRead(A1);
 
   // Test Code : show key status
+  Serial.print("move_key : ");
   Serial.println(move_key);
+  Serial.print("attack_key : ");
   Serial.println(attack_key);
 
   // When a move button has been pressed, turn.
@@ -142,6 +144,37 @@ void loop() {
       Serial.println("Go east!");
       if(akari_pos.x < 7)
         akari_pos.x++;
+      break;
+    default:
+      break;
+    }
+  }
+  
+  if(current_to_dimension(past_attack_key) == STAY) {
+    switch(current_to_dimension(attack_key)) {
+    case WEST:
+      if(akari_pos.x == 0)
+        Serial.println("You can't attack there...");
+      else
+        Serial.println("Attack west!");
+      break;
+    case NORTH:
+      if(akari_pos.y == 0)
+        Serial.println("You can't attack there...");
+      else
+        Serial.println("Attack north!");
+      break;
+    case SOUTH:
+      if(akari_pos.y == 7)
+        Serial.println("You can't attack there...");
+      else
+        Serial.println("Attack south!");
+      break;
+    case EAST:
+      if(akari_pos.x == 7)
+        Serial.println("You can't attack there...");
+      else
+        Serial.println("Attack east!");
       break;
     default:
       break;
