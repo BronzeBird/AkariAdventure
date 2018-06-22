@@ -41,8 +41,6 @@ int village_people_num = 4;
 
 // Servants of Vampire
 int servants_hp[] = { 0, 0, 0, 0 };
-
-// 126 loc
 Point servants_pos[4];
 int servants_num = 0;
 
